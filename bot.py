@@ -68,7 +68,28 @@ user_context = {}
 def generate_task():
     sektor = random.choice(sektorler)
     tur = random.choice(tasarim_turleri)
-    return sektor, tur
+    
+    marka_isimleri = {
+        "modern bir kahve dükkanı": ["Kahve Lab", "Bean & Brew", "Demli", "Mola Cafe", "Kahveci"],
+        "teknoloji startup şirketi": ["TechFlow", "DataPeak", "Cloudix", "Innovate", "ByteSoft"],
+        "online giyim markası": ["ModaVibe", "StreetStyle", "Trendix", "StyleUp", "UrbanWear"],
+        "spor salonu/fitness merkezi": ["PowerFit", "FitZone", "IronGym", "ActiveLife", "ShapeUp"],
+        "kuaför ve güzellik salonu": ["Luxe Beauty", "Güzelle", "StyleSalon", "PrimeCut", "BeautyBox"],
+        "mobilya ve dekorasyon mağazası": ["Evim", "MobiTrend", "DekorPlus", "ModernHome", "LuxeLiving"],
+        "pet shop/evcil hayvan dükkanı": ["PawHouse", "PetZone", "HappyPaws", "VetPet", "PawMart"],
+        "online eğitim platformu": ["BilgiMax", "EğitimHub", "LearnPro", "SkillUp", "AkademiPlus"],
+        "diş kliniği/sağlık merkezi": ["DentalCare", "SağlıkPlus", "MediZone", "GülüşKlinik", "HealthPro"],
+        "butik giyim mağazası": ["ChicStyle", "EliteWear", "ModaButik", "TrendHouse", "LuxeLook"],
+        "vegan/vejetaryen restoran": ["YeşilTabak", "VeganHouse", "BitkiKe", "GreenBite", "VegLife"],
+        "kreatif ajans": ["PixelArt", "CreativeHub", "DesignMax", "ArtFlow", "IdeaBox"],
+        "cryptocurrency/fintech şirketi": ["CoinFlow", "CryptoPay", "FinTechPro", "BlockChain", "Digimoney"],
+        "yoga stüdyosu": ["ZenFlow", "YogaZone", "Harmoni", "DengeStudio", "ZenithYoga"],
+        "çocuk eğitim merkezi": ["KidsAcademy", "MiniMinds", "ÇocukDünyası", "GelecekKüçük", "EğitimYıldız"]
+    }
+    
+    marka_ismi = random.choice(marka_isimleri.get(sektor, ["Marka"]))
+    
+    return sektor, tur, marka_ismi
 
 def get_ai_response(prompt):
     try:
@@ -94,12 +115,31 @@ def get_ai_response(prompt):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    sektor, tur = generate_task()
-    current_task[user_id] = {"sektor": sektor, "tur": tur}
+    sektor, tur, marka_ismi = generate_task()
+    current_task[user_id] = {"sektor": sektor, "tur": tur, "marka": marka_ismi}
 
-    detaylar = brief_detaylari.get(tur, "Detayları sen belirle")
+    detay_brief = {
+        "logo tasarımı": f"Marka adı: {marka_ismi}. Sektör: {sektor}. Hedef kitle: 25-45 yaş arası profesyoneller. Tasarım stili: modern, minimal. Renk tercihi: sıcak tonlar (turuncu, krem). Kullanım alanları: website, sosyal medya, kartvizit.",
+        "marka kimliği": f"Marka: {marka_ismi}. Sektör: {sektor}. Tüm marka kimliği packeti (logo, renk paleti, tipografi, kartvizit, antetli). Hedef kitle: genç-orta yaş. Marka kişiliği: güvenilir, profesyonel.",
+        "poster tasarımı": f"Marka: {marka_ismi}. Sektör: {sektor}. Etkinlik: yaz indirimi/kampanya. Tarih: önümüzdeki hafta. Mekan: mağaza/online. Hedef kitle: mevcut müşteriler. İletilmek istenen: %30 indirim mesajı.",
+        "sosyal medya içeriği": f"Marka: {marka_ismi}. Platform: Instagram. İçerik türü: ürün tanıtım postu. Kampanya: yeni sezon/koleksiyon. Hedef kitle: 18-35 yaş. Stil: dinamik, renkli.",
+        "reels/video kapağı": f"Marka: {marka_ismi}. Video içeriği: ürün tanıtım/reklam. Marka renkleri kullanılmalı. Metin: marka adı + slogan. Stil: dikkat çekici, modern.",
+        "menü tasarımı": f"Restoran: {marka_ismi}. Sektör: {sektor}. Yemek türü: kahvaltı/kahve & içecek. Fiyat aralığı: orta segment. Özel: vegan seçenekler, ev yapımı tatlılar.",
+        "web sitesi mockup": f"Marka: {marka_ismi}. Sektör: {sektor}. Site türü: e-ticaret. Ana sayfa: hero banner, ürün kategorileri, öne çıkan ürünler, hakkımızda. Renk: marka renkleri.",
+        "ambalaj tasarımı": f"Marka: {marka_ismi}. Ürün türü: kahve çekirdeği/paket. Ambalaj malzemesi: kağıt. Marka elementleri: logo, renkler. Boyut: 250g paket.",
+        "etiket tasarımı": f"Marka: {marka_ismi}. Ürün: doğal içecek/meyve suyu. İçerik: doğal, katkısız. Barcode gerekli. Marka elementleri: logo, slogan.",
+        "sosyal medya reklam": f"Marka: {marka_ismi}. Reklam hedefi: satış/artış. Hedef kitle: ilgi alanına göre. Bütçe: 1000 TL. Süre: 1 hafta. Format: 1080x1080.",
+        "katalog tasarımı": f"Marka: {marka_ismi}. Ürün sayısı: 20-30 ürün. Kategoriler: 4-5 kategori. Sayfa: 12-16 sayfa. Stil: modern, temiz.",
+        "davetiye kartı": f"Etkinlik: {marka_ismi} açılış/kuruluş yıldönümü. Tarih: önümüzdeki ay. Mekan: otel/etkinlik salonu. Konuk sayısı: 100-150 kişi. Stil: şık, profesyonel."
+    }
     
-    ai_prompt = f"Sen bir grafik tasarımcıdan tasarım isteyen bir müşterisin. {sektor} için {tur} istiyorsun. Kısa ve doğal bir şekilde tasarım isteğini yaz. Detay olarak şunu belirt: {detaylar}. Türkçe yaz."
+    detaylar = detay_brief.get(tur, f"Marka: {marka_ismi}. Sektör: {sektor}. Detayları sen ekle.")
+    
+    ai_prompt = f"""Sen bir gerçek müşterisin ve grafik tasarımcıdan tasarım istiyorsun. Aşağıdaki bilgileri kullanarak kısa, doğal ve profesyonel bir brief yaz:
+
+{detaylar}
+
+Sadece tek bir mesaj olarak yaz. Hiç ek açıklama yapma. Türkçe yaz."""
     
     mesaj = get_ai_response(ai_prompt)
     
@@ -125,23 +165,32 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     task = current_task[user_id]
     sektor = task["sektor"]
     tur = task["tur"]
+    marka = task["marka"]
 
     if update.message.photo:
         await update.message.reply_text("⏳ Tasarımınızı inceliyorum...")
         
-        ai_prompt = f"Sen bir grafik tasarım müşterisisin. {sektor} için {tur} için tasarım yaptın ve müşteri tasarımı gönderdi. Tasarımı değerlendir. Olumlu veya olumsuz geri bildirim ver. Kısa ve doğal bir şekilde yanıtla. Türkçe yaz."
+        ai_prompt = f"""Sen {marka} markası için tasarım yaptıran bir müşterisin. Tasarımcı {sektor} sektörü için {tur} tasarımını gönderdi. 
+        
+Tasarımı değerlendir:
+- Brief'e uygun mu?
+- Renkler ve stil markaya uygun mu?
+- Profesyonel görünüyor mu?
+
+Ya onay ver (beğendim, güzel, onaylıyorum) ya da düzeltme iste (renk değişikliği, font değişikliği, daha modernize et vb).
+Kısa ve doğal yanıt ver. Türkçe yaz."""
         
         response = get_ai_response(ai_prompt)
         await update.message.reply_text(response)
 
-        if "onay" in response.lower() or "güzel" in response.lower() or "beğendim" in response.lower():
+        if "onay" in response.lower() or "güzel" in response.lower() or "beğendim" in response.lower() or "onaylıyorum" in response.lower():
             await update.message.reply_text(
-                "✅ Teşekkürler! Yeni bir proje için /başla yazabilirsin."
+                "✅ Teşekkürler! Yeni bir proje için /basla yazabilirsin."
             )
             del current_task[user_id]
     else:
         await update.message.reply_text(
-            f"📝 {sektor} için {tur} tasarımınızı bekliyorum. "
+            f"📝 {marka} için {tur} tasarımınızı bekliyorum. "
             "Lütfen tasarım dosyasını/görseli gönderin."
         )
 
