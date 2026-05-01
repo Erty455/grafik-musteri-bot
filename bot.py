@@ -102,9 +102,9 @@ def get_ai_response(prompt):
                 "X-Title": "Grafik Musteri Botu"
             },
             json={
-                "model": "deepseek/deepseek-chat",
+                "model": "meta-llama/llama-3.1-8b-instruct",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 500
+                "max_tokens": 600
             },
             timeout=30
         )
@@ -119,27 +119,35 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     current_task[user_id] = {"sektor": sektor, "tur": tur, "marka": marka_ismi}
 
     detay_brief = {
-        "logo tasarımı": f"Marka adı: {marka_ismi}. Sektör: {sektor}. Hedef kitle: 25-45 yaş arası profesyoneller. Tasarım stili: modern, minimal. Renk tercihi: sıcak tonlar (turuncu, krem). Kullanım alanları: website, sosyal medya, kartvizit.",
-        "marka kimliği": f"Marka: {marka_ismi}. Sektör: {sektor}. Tüm marka kimliği packeti (logo, renk paleti, tipografi, kartvizit, antetli). Hedef kitle: genç-orta yaş. Marka kişiliği: güvenilir, profesyonel.",
-        "poster tasarımı": f"Marka: {marka_ismi}. Sektör: {sektor}. Etkinlik: yaz indirimi/kampanya. Tarih: önümüzdeki hafta. Mekan: mağaza/online. Hedef kitle: mevcut müşteriler. İletilmek istenen: %30 indirim mesajı.",
-        "sosyal medya içeriği": f"Marka: {marka_ismi}. Platform: Instagram. İçerik türü: ürün tanıtım postu. Kampanya: yeni sezon/koleksiyon. Hedef kitle: 18-35 yaş. Stil: dinamik, renkli.",
-        "reels/video kapağı": f"Marka: {marka_ismi}. Video içeriği: ürün tanıtım/reklam. Marka renkleri kullanılmalı. Metin: marka adı + slogan. Stil: dikkat çekici, modern.",
-        "menü tasarımı": f"Restoran: {marka_ismi}. Sektör: {sektor}. Yemek türü: kahvaltı/kahve & içecek. Fiyat aralığı: orta segment. Özel: vegan seçenekler, ev yapımı tatlılar.",
-        "web sitesi mockup": f"Marka: {marka_ismi}. Sektör: {sektor}. Site türü: e-ticaret. Ana sayfa: hero banner, ürün kategorileri, öne çıkan ürünler, hakkımızda. Renk: marka renkleri.",
-        "ambalaj tasarımı": f"Marka: {marka_ismi}. Ürün türü: kahve çekirdeği/paket. Ambalaj malzemesi: kağıt. Marka elementleri: logo, renkler. Boyut: 250g paket.",
-        "etiket tasarımı": f"Marka: {marka_ismi}. Ürün: doğal içecek/meyve suyu. İçerik: doğal, katkısız. Barcode gerekli. Marka elementleri: logo, slogan.",
-        "sosyal medya reklam": f"Marka: {marka_ismi}. Reklam hedefi: satış/artış. Hedef kitle: ilgi alanına göre. Bütçe: 1000 TL. Süre: 1 hafta. Format: 1080x1080.",
-        "katalog tasarımı": f"Marka: {marka_ismi}. Ürün sayısı: 20-30 ürün. Kategoriler: 4-5 kategori. Sayfa: 12-16 sayfa. Stil: modern, temiz.",
-        "davetiye kartı": f"Etkinlik: {marka_ismi} açılış/kuruluş yıldönümü. Tarih: önümüzdeki ay. Mekan: otel/etkinlik salonu. Konuk sayısı: 100-150 kişi. Stil: şık, profesyonel."
+        "logo tasarımı": f"Şirket: {marka_ismi}, {sektor} sektöründe faaliyet gösteriyor. Logo için: şirket adı, minimalist ve modern bir logo istiyoruz. Renk: turuncu-beyaz tonları. Kullanım: website, sosyal medya profil fotoğrafı, kartvizit. Hedef kitle: 25-40 yaş arası şehirli profesyoneller.",
+        "marka kimliği": f"Marka: {marka_ismi}, {sektor} alanında hizmet veriyor. Tüm marka kimliği packeti istiyoruz: logo, renk paleti (3 ana renk + 2 aksan renk), tipografi (header + body font), kartvizit, antetli kağıt, zarflar. Marka kişiliği: güvenilir, modern, profesyonel. Hedef: 25-45 yaş.",
+        "poster tasarımı": f"Kampanya: {marka_ismi} yaz sezonu indirimi. Tarih: 15-30 Haziran. Mekan: tüm şubeler ve online. İndirim: %40. Hedef kitle: mevcut müşterilerimiz ve potansiyel yeni müşteriler. Poster boyutu: A3. Tasarımda: logo, indirim oranı, tarih bilgisi yer alsın.",
+        "sosyal medya içeriği": f"Marka: {marka_ismi}. Platform: Instagram. Yeni ürünümüzü tanıtan 1080x1080 boyutunda bir post hazırlayın. Ürün: [ürün adı]. Fiyat: [fiyat]. Hafta sonu kampanyası. Hedef: 18-35 yaş, şehirli, aktif sosyal medya kullanıcıları.",
+        "reels/video kapağı": f"Marka: {marka_ismi}. Video: 15-30 saniyelik ürün tanıtım videosu için kapak tasarımı. Boyut: 1080x1920 (dikey). Logo sol üst köşede, marka adı ortada. Renk: marka renkleri ağırlıklı. Stil: dikkat çekici, genç.",
+        "menü tasarımı": f"Restoran: {marka_ismi}. Tür: kahve & kahvaltı dükkanı. Menü: kahve içecekler (10 çeşit), kahvaltı tabağı (5 çeşit), tatlılar (4 çeşit), sandwich/sandwich (6 çeşit). Fiyat aralığı: 35-120 TL. Tasarım: temiz, okunaklı, modern.",
+        "web sitesi mockup": f"Marka: {marka_ismi}, {sektor}. E-ticaret sitesi ana sayfa mockup istiyoruz. Bölümler: üst menü (logo, kategoriler, sepet), hero banner (buyuk görsel + slogan), kategoriler (4 ana kategori), öne çıkan ürünler (8 ürün), footer. Renk: marka renkleri.",
+        "ambalaj tasarımı": f"Marka: {marka_ismi}. Ürün: organik kahve çekirdeği. Ambalaj: 250g valfli kahve paketi. Tasarımda: logo, ürün adı, içerik bilgileri, barcode, kahve çekirdeği illüstrasyonu. Renk: kahverengi-tonları, modern.",
+        "etiket tasarımı": f"Marka: {marka_ismi}. Ürün: doğal elma sirkesi (500ml şişe). Etiket: logo, ürün adı, içerik (elma sirkesi), son kullanma tarihi, barcode, "Organik" ibaresi. Stil: doğal, temiz, beyaz-yeşil tonları.",
+        "sosyal medya reklam": f"Marka: {marka_ismi}, {sektor}. Instagram reklamı: 1080x1080 boyutunda. Amaç: yeni müşteri kazanımı. Hedef: [ilgi alanı], 25-45 yaş, şehirli. Bütçe: günlük 500 TL. Süre: 7 gün. Hafta sonu özel %25 indirim.",
+        "katalog tasarımı": f"Marka: {marka_ismi}. Ürünler: mobilya koleksiyonu. 16 sayfalık katalog: kapak, 4 kategori (koltuk, masa, sandalye, aksesuar), her kategoride 3-4 ürün, son sayfa iletişim. Stil: modern, minimal, beyaz zemin.",
+        "davetiye kartı": f"Etkinlik: {marka_ismi} 5. kuruluş yıldönümü partisi. Tarih: 20 Haziran Cuma, saat 19:00. Yer: [mekan adresi]. Konuk: 150 kişi. Kartvizit boyutunda, katlı. Stil: şık, altın detaylı, modern."
     }
     
-    detaylar = detay_brief.get(tur, f"Marka: {marka_ismi}. Sektör: {sektor}. Detayları sen ekle.")
+    detaylar = detay_brief.get(tur, f"Marka: {marka_ismi}, {sektor} sektöründe. {tur} için detaylı tasarım briefi istiyorum.")
     
-    ai_prompt = f"""Sen bir gerçek müşterisin ve grafik tasarımcıdan tasarım istiyorsun. Aşağıdaki bilgileri kullanarak kısa, doğal ve profesyonel bir brief yaz:
+    ai_prompt = f"""Sen bir gerçek müşterisin. {marka_ismi} için {tur} tasarımı yaptırmak istiyorsun.
+
+Aşağıdaki bilgileri kullanarak kısa ama DETAYLI bir brief yaz. Sanki gerçek bir müşteri gibi konuş:
 
 {detaylar}
 
-Sadece tek bir mesaj olarak yaz. Hiç ek açıklama yapma. Türkçe yaz."""
+Kurallar:
+- Marka adı ve sektör MUTLAKA belirtilmeli
+- Ne istediğin NET olmalı (boyut, format, renk tercihi, hedef kitle)
+- Örnek bir cümle: "Merhaba, [marka adı] için [ne istediğini] tasarımını yaptırmak istiyorum. [detaylar]. [tarih/talimat]"
+- Kesinlikle fazla detay ekleme ama temel bilgileri ver
+- Sadece brief yaz, başka bir şey yazma
+- Türkçe yaz"""
     
     mesaj = get_ai_response(ai_prompt)
     
@@ -170,14 +178,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.photo:
         await update.message.reply_text("⏳ Tasarımınızı inceliyorum...")
         
-        ai_prompt = f"""Sen {marka} markası için tasarım yaptıran bir müşterisin. Tasarımcı {sektor} sektörü için {tur} tasarımını gönderdi. 
-        
-Tasarımı değerlendir:
-- Brief'e uygun mu?
-- Renkler ve stil markaya uygun mu?
-- Profesyonel görünüyor mu?
+        ai_prompt = f"""Sen {marka} markasının sahibisin. {sektor} sektöründe faaliyet gösteriyorsun. Tasarımcıya {tur} tasarımı için brief verdin ve tasarımcı çalışmayı gönderdi.
 
-Ya onay ver (beğendim, güzel, onaylıyorum) ya da düzeltme iste (renk değişikliği, font değişikliği, daha modernize et vb).
+Şimdi tasarımı değerlendir:
+1. Brief'e uygun mu? (boyut, format, renk, içerik)
+2. Marka kimliğine uygun mu?
+3. Profesyonel ve kullanışlı mı?
+
+Mümkünse ONAY VER (onaylıyorum, güzel, beğendim, tamam). 
+Eğer düzeltme istersen tek bir şey iste (örn: "renkleri biraz daha canlı olsun" veya "logo daha büyük olsun").
 Kısa ve doğal yanıt ver. Türkçe yaz."""
         
         response = get_ai_response(ai_prompt)
