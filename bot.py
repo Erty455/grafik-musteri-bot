@@ -5,8 +5,6 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import requests
 
-import os
-
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
@@ -102,14 +100,17 @@ def get_ai_response(prompt):
                 "X-Title": "Grafik Musteri Botu"
             },
             json={
-                "model": "meta-llama/llama-3.1-8b-instruct",
+                "model": "deepseek/deepseek-chat",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 600
+                "max_tokens": 500
             },
-            timeout=30
+            timeout=60
         )
         result = response.json()
-        return result['choices'][0]['message']['content']
+        if 'choices' in result and len(result['choices']) > 0:
+            return result['choices'][0]['message']['content']
+        else:
+            return "Bir hata oluştu, tekrar deneyin."
     except Exception as e:
         return f"Bir hata oluştu: {str(e)}"
 
