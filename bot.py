@@ -100,7 +100,7 @@ def get_ai_response(prompt):
                 "X-Title": "Grafik Musteri Botu"
             },
             json={
-                "model": "deepseek/deepseek-chat",
+                "model": "qwen/qwen-2.5-7b-instruct",
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 400
             },
