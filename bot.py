@@ -102,17 +102,21 @@ def get_ai_response(prompt):
             json={
                 "model": "deepseek/deepseek-chat",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 500
+                "max_tokens": 400
             },
-            timeout=60
+            timeout=90
         )
         result = response.json()
         if 'choices' in result and len(result['choices']) > 0:
             return result['choices'][0]['message']['content']
+        elif 'error' in result:
+            return f"Hata: {result['error'].get('message', 'Bilinmeyen hata')}"
         else:
             return "Bir hata oluştu, tekrar deneyin."
+    except requests.exceptions.Timeout:
+        return "Timeout. Tekrar deneyin."
     except Exception as e:
-        return f"Bir hata oluştu: {str(e)}"
+        return f"Hata: {str(e)}"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
