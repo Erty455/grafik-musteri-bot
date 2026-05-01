@@ -5,8 +5,14 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import requests
 
-TOKEN = "8587966861:AAGDACLbMkJtg3OHkVHfYP77WhLnIyoa_-g"
-OPENROUTER_API_KEY = "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"
+import os
+
+TOKEN = os.environ.get("TELEGRAM_TOKEN")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+
+if not TOKEN or not OPENROUTER_API_KEY:
+    print("Environment variables not set!")
+    exit(1)
 
 tasarim_turleri = [
     "logo tasarımı",
