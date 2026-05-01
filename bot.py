@@ -198,6 +198,31 @@ Kısa ve doğal yanıt ver. Türkçe yaz."""
                 "✅ Teşekkürler! Yeni bir proje için /basla yazabilirsin."
             )
             del current_task[user_id]
+    detay_istek_kelimeleri = ["detay", "daha", "fazla", "bilgi", "ayrintı", "ne istediğimi", "daha açık"]
+    
+    if any(kelime in user_text.lower() for kelime in detay_istek_kelimeleri):
+        detay_ai_prompt = f"""Sen bir gerçek müşterisin. {marka} için {tur} tasarımı için once brief verdin ama tasarımcı daha fazla detay istedi.
+
+Asagidaki bilgileri DETAYLI sekilde yaz (boyut, renk, hedef kitle, stil, kullanım alanı, özel istekler dahil):
+
+Marka: {marka}
+Sektor: {sektor}
+Tasarim: {tur}
+
+Örnek detay:
+- Boyut/format: ...
+- Renk tercihi: ...
+- Hedef kitle: ...
+- Stil: ...
+- İçerik: ...
+- Kullanım alanı: ...
+
+Kısa ama FULL DETAYLI yaz. Türkçe yaz."""
+
+        detay_mesaj = get_ai_response(detay_ai_prompt)
+        await update.message.reply_text(
+            f"📋 Detaylar:\n{detay_mesaj}\n\nTasarımı hazırlayıp gönderebilirsiniz."
+        )
     else:
         await update.message.reply_text(
             f"📝 {marka} için {tur} tasarımınızı bekliyorum. "
